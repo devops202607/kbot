@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	TgToken = os.Getenv("TG_TOKEN")
+	TgToken = os.Getenv("TELE_TOKEN")
 )
 
 // kbotCmd represents the kbot command
@@ -25,7 +25,7 @@ var kbotCmd = &cobra.Command{
 	Long:    "Starting bot long description",
 	Run: func(cmd *cobra.Command, args []string) {
 		if TgToken == "" {
-			log.Fatal("TG_TOKEN environment variable is not set")
+			log.Fatal("TELE_TOKEN environment variable is not set")
 		}
 
 		fmt.Printf("kbot %s started", appVersion)

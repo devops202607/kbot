@@ -19,7 +19,7 @@ go build -ldflags "-X github.com/devops202607/kbot/cmd.appVersion=v1.0.0"
 ## Usage
 
 ```bash
-export TG_TOKEN="your-telegram-bot-token"
+export TELE_TOKEN="your-telegram-bot-token"
 ./kbot start
 ```
 ### CLI commands
