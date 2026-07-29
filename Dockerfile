@@ -14,4 +14,6 @@ FROM quay.io/projectquay/golang:1.22
 WORKDIR /app
 COPY --from=builder /app/kbot /app/kbot
 
-ENTRYPOINT ["/app/kbot"]
+ENV TELE_TOKEN="changeme"
+
+ENTRYPOINT ["/app/kbot", "start"]
