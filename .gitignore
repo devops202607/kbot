@@ -1,4 +1,5 @@
-kbot-*
+#
+kbot*
 
 # Code coverage profiles and other test artifacts
 *.out
