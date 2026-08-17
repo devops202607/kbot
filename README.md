@@ -12,7 +12,7 @@ Telegram-bot
 
 ```mermaid
 flowchart TD
-    A[Developer] -->|push to develop| B[build-develop.yml]
+    A[Developer] -->|push to develop| B[build.yml]
 
     B --> C[Build image<br/>v1.0.x-HASH-linux-amd64]
     C --> D[Push to GHCR]
