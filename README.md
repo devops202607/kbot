@@ -12,26 +12,17 @@ Telegram-bot
 
 ```mermaid
 flowchart TD
-    A[Developer] -->|push| B{Branch?}
+    A[Developer] -->|push to develop| B[build-develop.yml]
 
-    B -->|develop| C[build-develop.yml]
-    B -->|tag v*| D[build-image.yml]
+    B --> C[Build image<br/>v1.0.x-HASH-linux-amd64]
+    C --> D[Push to GHCR]
+    D --> E[Update helm/kbot/values.yaml]
+    E --> F[Commit & push tag update]
 
-    C --> C1[Build image<br/>v1.0.x-HASH-linux-amd64]
-    C1 --> C2[Push to GHCR]
-    C2 --> C3[Update helm/kbot/values.yaml]
-    C3 --> C4[Commit & push tag update]
+    D --> G[ghcr.io/devops202607/kbot]
+    G --> H[Helm deploy to K8s]
 
-    D --> D1[Build image<br/>v1.0.x-HASH-linux-amd64]
-    D1 --> D2[Push to GHCR]
-
-    C2 --> E[ghcr.io/devops202607/kbot]
-    D2 --> E
-
-    E --> F[Helm deploy to K8s]
-
-    style C fill:#4caf50,color:#fff
-    style D fill:#2196f3,color:#fff
+    style B fill:#4caf50,color:#fff
 ```
 
 ## Build
