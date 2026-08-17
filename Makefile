@@ -1,6 +1,5 @@
-VERSION ?= $(shell git describe --tags --always 2>/dev/null | sed 's/^v/v/' | sed 's/-g/-/' || echo "v.unknown")
-REGISTRY ?= someregistry
-IMAGE_NAME := kbot
+VERSION ?= $(shell TAG=$$(git describe --tags --abbrev=0 2>/dev/null); HASH=$$(git rev-parse --short HEAD 2>/dev/null); if [ -n "$$TAG" ] && [ -n "$$HASH" ]; then echo "$$TAG-$$HASH"; else echo "v.unknown-$$HASH"; fi)
+IMAGE_NAME := ghcr.io/devops202607/kbot
 
 MODULE_PATH := github.com/devops202607/kbot/cmd.appVersion
 LDFLAGS := -s -w -X '$(MODULE_PATH)=$(VERSION)'
@@ -29,8 +28,8 @@ windows: deps
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -v -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-windows-amd64.exe .
 
 image:
-	docker build -t $(REGISTRY)/$(IMAGE_NAME):$(VERSION) .
+	docker build -t $(IMAGE_NAME):$(VERSION) .
 
 clean:
 	rm -f $(BINARY_NAME) $(BINARY_NAME)-*
-	-docker rmi -f $(REGISTRY)/$(IMAGE_NAME):$(VERSION)
+	-docker rmi -f $(IMAGE_NAME):$(VERSION)

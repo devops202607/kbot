@@ -21,8 +21,9 @@ jobs:
 
       - name: Set VERSION
         run: |
-          TAG=$(git describe --tags --always | sed 's/^v/v/' | sed 's/-g/-/')
-          echo "VERSION=${TAG}" >> "$GITHUB_ENV"
+          TAG=$(git describe --tags --abbrev=0)
+          HASH=$(git rev-parse --short HEAD)
+          echo "VERSION=${TAG}-${HASH}" >> "$GITHUB_ENV"
 
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
