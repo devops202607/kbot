@@ -66,11 +66,12 @@ jobs:
       - name: Update Helm chart version
         run: |
           yq -i ".image.tag = \"${{ needs.ci.outputs.version }}\"" helm/kbot/values.yaml
+          yq -i ".appVersion = \"${{ needs.ci.outputs.version }}\"" helm/kbot/Chart.yaml
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add helm/kbot/values.yaml
-          git diff --cached --quiet || git commit -m "chore: update helm chart tag to ${{ needs.build.outputs.version }}"
+          git add helm/kbot/values.yaml helm/kbot/Chart.yaml
+          git diff --cached --quiet || git commit -m "chore: update helm chart tag to ${{ needs.ci.outputs.version }}"
           git push
