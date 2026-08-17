@@ -67,7 +67,8 @@ jobs:
 
       - name: Update Helm chart version
         run: |
-          yq -i '.image.tag = "${{ needs.build.outputs.version }}"' helm/kbot/values.yaml
+          FULL_TAG="${{ needs.ci.outputs.version }}-linux-amd64"
+          yq -i ".image.tag = \"${FULL_TAG}\"" helm/kbot/values.yaml
 
       - name: Commit and push
         run: |
