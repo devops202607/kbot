@@ -7,7 +7,7 @@ replicaCount: 1
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: ghcr.io/devops202607
-  tag: v1.0.4-b55c4d4
+  tag: v1.0.5-553811e
   pullPolicy: IfNotPresent
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
