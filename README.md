@@ -28,6 +28,7 @@ flowchart TD
 
     G --> H[Git repository]
     H -->|pull & sync| I[ArgoCD]
+    I -->|pull image| K
     I -->|deploy| J[K8s cluster]
 
     D --> K[ghcr.io/devops202607/kbot]
