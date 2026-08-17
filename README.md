@@ -22,7 +22,7 @@ flowchart TD
     D -->|needs.ci| E[cd]
 
     subgraph cd [CD]
-        E --> F[Update helm chart<br/>values.yaml + Chart.yaml]
+        E --> F[Update helm/kbot/values.yaml<br/>with yq]
         F --> G[Commit & push]
     end
 
