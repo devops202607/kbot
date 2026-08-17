@@ -14,15 +14,23 @@ Telegram-bot
 flowchart TD
     A[Developer] -->|push to develop| B[build.yml]
 
-    B --> C[Build image<br/>v1.0.x-HASH-linux-amd64]
-    C --> D[Push to GHCR]
-    D --> E[Update helm/kbot/values.yaml]
-    E --> F[Commit & push tag update]
+    subgraph build
+        B --> C[Build image<br/>v1.0.x-HASH-linux-amd64]
+        C --> D[Push to GHCR]
+    end
 
-    D --> G[ghcr.io/devops202607/kbot]
-    G --> H[Helm deploy to K8s]
+    D -->|needs.build| E[cd]
 
-    style B fill:#4caf50,color:#fff
+    subgraph cd
+        E --> F[Update helm/kbot/values.yaml<br/>with yq]
+        F --> G[Commit & push]
+    end
+
+    D --> H[ghcr.io/devops202607/kbot]
+    H --> I[Helm deploy to K8s]
+
+    style build fill:#2196f3,color:#fff
+    style cd fill:#4caf50,color:#fff
 ```
 
 ## Build
