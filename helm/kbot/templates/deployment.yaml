@@ -44,14 +44,12 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- if .Values.secret.create }}
           env:
             - name: TELE_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "kbot.fullname" . }}-secret
+                  name: {{ .Values.secret.name }}
                   key: TELE_TOKEN
-          {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

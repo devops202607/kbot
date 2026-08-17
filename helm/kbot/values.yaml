@@ -15,7 +15,8 @@ imagePullSecrets: []
 # Set `teleToken` to the actual bot token (from @BotFather). The token is
 # stored base64-encoded by Kubernetes, so do not commit a real value.
 secret:
-  create: true
+  create: false
+  name: "kbot-telegram"
   teleToken: ""
 # This is to override the chart name.
 nameOverride: ""
