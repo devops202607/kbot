@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -51,6 +52,12 @@ var kbotCmd = &cobra.Command{
 			}
 			return err
 		})
+
+		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, "ok")
+		})
+		go log.Fatal(http.ListenAndServe(":8080", nil))
 
 		kbot.Start()
 	},

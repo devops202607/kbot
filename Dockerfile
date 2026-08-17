@@ -16,4 +16,6 @@ COPY --from=builder /app/kbot /app/kbot
 
 ENV TELE_TOKEN="changeme"
 
+EXPOSE 8080
+
 ENTRYPOINT ["/app/kbot", "start"]
