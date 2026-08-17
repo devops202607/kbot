@@ -5,8 +5,9 @@ COPY . .
 
 ARG TARGETOS
 ARG TARGETARCH
+ARG VERSION=dev
 
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o kbot .
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w -X 'github.com/devops202607/kbot/cmd.appVersion=${VERSION}'" -o kbot .
 
 # Stage 2
 FROM quay.io/projectquay/golang:1.22
@@ -15,5 +16,7 @@ WORKDIR /app
 COPY --from=builder /app/kbot /app/kbot
 
 ENV TELE_TOKEN="changeme"
+
+EXPOSE 8080
 
 ENTRYPOINT ["/app/kbot", "start"]

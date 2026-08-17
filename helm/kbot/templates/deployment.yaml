@@ -38,20 +38,21 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: {{ .Values.image.repository }}/{{ .Chart.Name }}:{{ .Values.image.tag }}-{{ .Values.image.arch | default "amd64"}}
+          image: {{ .Values.image.repository }}/{{ .Chart.Name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- if .Values.secret.create }}
+            - name: health
+              containerPort: {{ .Values.healthPort | default 8080 }}
+              protocol: TCP
           env:
             - name: TELE_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "kbot.fullname" . }}-secret
+                  name: {{ .Values.secret.name }}
                   key: TELE_TOKEN
-          {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

@@ -1,11 +1,9 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -17,18 +15,18 @@ var (
 	TgToken = os.Getenv("TELE_TOKEN")
 )
 
-// kbotCmd represents the kbot command
 var kbotCmd = &cobra.Command{
 	Use:     "kbot",
 	Aliases: []string{"start"},
 	Short:   "Starting bot",
 	Long:    "Starting bot long description",
 	Run: func(cmd *cobra.Command, args []string) {
-		if TgToken == "" {
-			log.Fatal("TELE_TOKEN environment variable is not set")
-		}
+		log.Printf("[INFO] kbot %s starting", appVersion)
 
-		fmt.Printf("kbot %s started", appVersion)
+		if TgToken == "" {
+			log.Fatal("[FATAL] TELE_TOKEN environment variable is not set")
+		}
+		log.Printf("[INFO] TELE_TOKEN loaded, length=%d", len(TgToken))
 
 		kbot, err := telebot.NewBot(telebot.Settings{
 			URL:    "",
@@ -37,35 +35,49 @@ var kbotCmd = &cobra.Command{
 		})
 
 		if err != nil {
-			log.Fatalf("Error Bot starting: %s", err)
+			log.Fatalf("[FATAL] Bot init error: %s", err)
 		}
+		log.Println("[INFO] Bot initialized successfully")
 
 		kbot.Handle(telebot.OnText, func(m telebot.Context) error {
+			sender := m.Sender()
+			log.Printf("[INFO] Message received from user=%d username=%q text=%q",
+				sender.ID, sender.Username, m.Text())
 
-			log.Print(m.Message().Payload, m.Text())
 			payload := m.Message().Payload
 
 			switch payload {
 			case "hello":
-				err = m.Send(fmt.Sprintf("Hello, I`m KBot %s!", appVersion))
+				reply := fmt.Sprintf("Hello, I`m KBot %s!", appVersion)
+				log.Printf("[INFO] Sending reply to user=%d: %q", sender.ID, reply)
+				err = m.Send(reply)
+				if err != nil {
+					log.Printf("[ERROR] Failed to send reply to user=%d: %s", sender.ID, err)
+				}
+			default:
+				log.Printf("[WARN] Unknown command %q from user=%d", payload, sender.ID)
 			}
 			return err
 		})
 
+		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("[DEBUG] Health check from %s", r.RemoteAddr)
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, "ok")
+		})
+
+		log.Println("[INFO] Health server listening on :8080")
+		go func() {
+			if err := http.ListenAndServe(":8080", nil); err != nil {
+				log.Fatalf("[FATAL] Health server error: %s", err)
+			}
+		}()
+
+		log.Println("[INFO] Bot polling started")
 		kbot.Start()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(kbotCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// kbotCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only work when this command
-	// is called directly, e.g.:
-	// kbotCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
